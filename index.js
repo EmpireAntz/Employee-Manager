@@ -98,7 +98,7 @@ const main = () => {
                         choices: employees.map(emp => ({ name: emp.name, value: emp.id }))
                     }
                 ]).then(answers => {
-                    const selectedEmployeeId = answers.employee;
+                    const selectedEmployeeId = answers.employee
                     connection.query('SELECT id, title FROM role', (err, roles) => {
                         if (err) {
                             console.error(err)
@@ -140,7 +140,43 @@ const main = () => {
         }
 
         if (choice === "Add Role") {
-
+             // Fetch all departments
+            connection.query('SELECT id, department_name FROM department', (err, departments) => {
+                if (err) {
+                    console.error(err)
+                    return
+                }
+                inquirer.prompt([
+                    {
+                        type: 'input',
+                        name: 'title',
+                        message: 'What is the title of the new role?'
+                    },
+                    {
+                        type: 'input',
+                        name: 'salary',
+                        message: 'What is the salary for this role?',
+                        validate: value => !isNaN(value)
+                    },
+                    {
+                        type: 'list',
+                        name: 'department',
+                        message: 'Which department does this role belong to?',
+                        choices: departments.map(dept => ({ name: dept.department_name, value: dept.id }))
+                    }
+                ]).then(answers => {
+                    connection.query('INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)', 
+                    [answers.title, answers.salary, answers.department], 
+                    (err, results) => {
+                        if (err) {
+                            console.error(err)
+                            return
+                        }
+                        console.log('Role added!')
+                        main()
+                    })
+                })
+            })
         }
 
         if (choice === "View All Departments") {
@@ -155,7 +191,24 @@ const main = () => {
         }
 
         if (choice === "Add Department") {
-
+            inquirer.prompt([
+                {
+                    type: 'input',
+                    name: 'departmentName',
+                    message: 'What is the name of the new department?'
+                }
+            ]).then(answers => {
+                connection.query('INSERT INTO department SET ?', 
+                { department_name: answers.departmentName }, 
+                (err, results) => {
+                    if (err) {
+                        console.error(err);
+                        return; // Stop execution on error
+                    }
+                    console.log('New department added!')
+                    main();
+                })
+            })
         }
     })
 }
