@@ -31,8 +31,10 @@ const main = () => {
 
         if (choice === "View All Employees") {
             connection.query('SELECT * FROM employee', (err, results) => {
-                if (err) throw err
-                console.error(err)
+                if (err) {
+                    console.error(err)
+                    return
+                }
                 console.table(results)
                 main()
             })
@@ -83,13 +85,55 @@ const main = () => {
         }
 
         if (choice === "Update Employee Role") {
-
+            connection.query('SELECT id, CONCAT(first_name, " ", last_name) AS name FROM employee', (err, employees) => {
+                if (err) {
+                    console.error(err);
+                    return
+                }
+                inquirer.prompt([
+                    {
+                        type: 'list',
+                        name: 'employee',
+                        message: 'Which employee\'s role do you want to update?',
+                        choices: employees.map(emp => ({ name: emp.name, value: emp.id }))
+                    }
+                ]).then(answers => {
+                    const selectedEmployeeId = answers.employee;
+                    connection.query('SELECT id, title FROM role', (err, roles) => {
+                        if (err) {
+                            console.error(err)
+                            return
+                        }
+                    
+                        inquirer.prompt([
+                            {
+                                type: 'list',
+                                name: 'role',
+                                message: 'Select the new role:',
+                                choices: roles.map(role => ({ name: role.title, value: role.id }))
+                            }
+                        ]).then(roleAnswer => {
+                            const newRoleId = roleAnswer.role
+                            connection.query('UPDATE employee SET role_id = ? WHERE id = ?', [newRoleId, selectedEmployeeId], (err, results) => {
+                                if (err) {
+                                    console.error(err)
+                                    return; // Stop execution on error
+                                }
+                                console.log('Employee\'s role updated!')
+                                main();
+                            })
+                        })
+                    })
+                })
+            })
         }
 
         if (choice === "View All Roles") {
             connection.query('SELECT * FROM role ', (err, results) => {
-                if (err) throw err
-                console.error(err)
+                if (err) {
+                    console.error(err)
+                    return
+                }
                 console.table(results)
                 main()
             })
@@ -101,8 +145,10 @@ const main = () => {
 
         if (choice === "View All Departments") {
             connection.query('SELECT * FROM department', (err, results) => {
-                if (err) throw err
-                console.error(err)
+                if (err) {
+                    console.error(err)
+                    return
+                }
                 console.table(results)
                 main()
             })
