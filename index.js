@@ -26,8 +26,7 @@ const main = () => {
             ]
         }
 
-    ])
-    .then(answers => {
+    ]).then(answers => {
         const choice = answers.action
 
         if (choice === "View All Employees") {
@@ -39,6 +38,54 @@ const main = () => {
             })
         }
 
+        if (choice === "Add Employees") {
+            // First, fetch all roles from the database
+            connection.query('SELECT id, title FROM role', (err, roles) => {
+                if (err) {
+                    console.error(err);
+                    return
+                }
+        
+                inquirer.prompt([
+                    { 
+                        type: 'input', 
+                        name: 'firstName',
+                        message: "What is the employee's first name?" 
+                    },
+                    { 
+                        type: 'input', 
+                        name: 'lastName', 
+                        message: "What is the employee's last name?" 
+                    },
+                    {
+                        type: 'list',
+                        name: 'role',
+                        message: 'What is the employee\'s role?',
+                        choices: roles.map(role => role.title)
+                    }
+                ]).then(answers => {
+                    const role = roles.find(r => r.title === answers.role)
+
+                    connection.query('INSERT INTO employee SET ?', {
+                        first_name: answers.firstName,
+                        last_name: answers.lastName,
+                        role_id: role.id
+                    }, (err, results) => {
+                        if (err) {
+                            console.error(err)
+                            return
+                        }
+                        console.log('Employee Added!')
+                        main()
+                    })
+                })
+            })
+        }
+
+        if (choice === "Update Employee Role") {
+
+        }
+
         if (choice === "View All Roles") {
             connection.query('SELECT * FROM role ', (err, results) => {
                 if (err) throw err
@@ -48,6 +95,10 @@ const main = () => {
             })
         }
 
+        if (choice === "Add Role") {
+
+        }
+
         if (choice === "View All Departments") {
             connection.query('SELECT * FROM department', (err, results) => {
                 if (err) throw err
@@ -55,6 +106,10 @@ const main = () => {
                 console.table(results)
                 main()
             })
+        }
+
+        if (choice === "Add Department") {
+
         }
     })
 }
