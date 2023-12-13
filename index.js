@@ -34,7 +34,7 @@ const main = () => {
         //Handles the logic for view all employees
         if (choice === "View All Employees") {
             //SQL query to get all data from employee table
-            connection.query('SELECT * FROM employee', (err, results) => {
+            connection.query('SELECT e.id, e.first_name, e.last_name, r.title, r.salary, CONCAT(m.first_name, \' \', m.last_name) AS manager FROM employee e JOIN role r ON e.role_id = r.id JOIN department d ON r.department_id = d.id LEFT JOIN employee m ON e.manager_id = m.id', (err, results) => {
                 //Error handling
                 if (err) {
                     console.error(err)
@@ -153,7 +153,7 @@ const main = () => {
         //Handles the logic for viewing all roles
         if (choice === "View All Roles") {
             //SQL query to get everything from the role table
-            connection.query('SELECT * FROM role ', (err, results) => {
+            connection.query('SELECT r.id, r.title, r.salary, d.department_name FROM role r JOIN department d ON r.department_id = d.id', (err, results) => {
                 //Error handling
                 if (err) {
                     console.error(err)
