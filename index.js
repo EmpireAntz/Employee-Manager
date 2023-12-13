@@ -3,10 +3,10 @@ const inquirer = require('inquirer')
 const mysql = require('mysql2')
 //Establish connection to the mysql database
 const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '2L#RJWFposb66p)UL&w9',
-    database: 'employee_db',
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_DATABASE,
 })
 //Main function that initiates the application
 const main = () => {
