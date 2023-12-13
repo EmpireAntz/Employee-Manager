@@ -4,6 +4,9 @@
 
 Employee Tracker is a command-line application to manage a company's employee database. It allows users to view and interact with information regarding employees, roles, and departments within a company. This tool is built using Node.js, Inquirer, and MySQL.
 
+## Walkthrough 
+[Click this link to view walkthrough video](https://drive.google.com/file/d/1CtzFSLcshYx6begKmHFvUqAvYziZzpaP/view)
+
 ## Table of Contents
 - [Installation](#installation)
 - [Usage](#usage)
@@ -47,10 +50,13 @@ Follow the on-screen prompts to view, add or update employees, roles, and depart
 - Update employee roles
 
 ## Contributing
+
 Contributions to improve Employee Tracker are welcome. Please ensure your pull requests are well-documented.
 
 ## Tests
+
 There are currently no automated tests for this application. You can manually test the application by running it and inputting test data.
 
 ## Questions
+
 For any questions regarding the application, please open an issue or contact me directly at thebigboognish@gmail.com.
